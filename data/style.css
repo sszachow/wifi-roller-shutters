@@ -1,0 +1,56 @@
+div#btn-container {
+    width: 300px;
+    height: 300px;
+    display: grid;
+    grid: 100px 100px 100px / 100px 100px 100px;
+    margin-left: 10px;
+    margin-right: 10px;
+    place-items: center center;
+}
+
+h1 {
+    font-weight: bold;
+}
+
+button {
+    background-color: #04AA6D;
+    /* Green */
+    padding: 0px;
+    width: 100px;
+    height: 100px;
+    color: white;
+    font-size: 60px;
+    font-weight: bold;
+    border-color: black;
+    border-width: 5px;
+    border-radius: 10%;
+    touch-action: manipulation;
+}
+
+button:disabled {
+    opacity: 50%;
+}
+
+button:active {
+    opacity: 50%;
+}
+
+button#left {
+    grid-row-start: 2;
+    grid-column-start: 1;
+}
+
+button#up {
+    grid-row-start: 1;
+    grid-column-start: 2;
+}
+
+button#down {
+    grid-row-start: 3;
+    grid-column-start: 2;
+}
+
+button#right {
+    grid-row-start: 2;
+    grid-column-start: 3;
+}

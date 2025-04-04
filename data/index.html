@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Roller shutters</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFAgMAAADwAc52AAAACVBMVEX//wAAAADAwMAtVmDTAAAAEElEQVR4nGMQZWDQYmCAkQAEpwCUSr5jBwAAAABJRU5ErkJggg==">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div>
+        <h1>#<span id="chanelValue">?</span></h1>
+        <h2><span id="chanelName">?</span></h2>
+    </div>
+    <br>
+    <div id="btn-container">
+        <button id="up" onclick="send('up')">&uarr;</button>
+        <button id="down" onclick="send('down')">&darr;</button>
+        <button id="left" onclick="channel('left')">&larr;</button>
+        <button id="right" onclick="channel('right')">&rarr;</button>
+    </div>
+    <script src="channel_names.js"></script>
+    <script async="false">
+        var maxChannel = getMaxChannelFromMapping();
+        var displayedChannel = document.getElementById("chanelValue");
+        var displayedChannelName = document.getElementById("chanelName");
+        var buttonUp = document.getElementById("up");
+        var buttonDown = document.getElementById("down");
+
+        getCurrentChannel();
+
+        function send(direction) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    buttonUp.disabled = false;
+                    buttonDown.disabled = false;
+                }
+            }
+            xhr.open("GET", `/${direction}?channel=${displayedChannel.innerHTML}`, true);
+            xhr.send();
+            buttonUp.disabled = true;
+            buttonDown.disabled = true;
+        }
+
+        function channel(direction) {
+            var currentChannel = parseInt(displayedChannel.innerHTML);
+
+            if (direction == "right") {
+                currentChannel = currentChannel + 1;
+                if (currentChannel > maxChannel) {
+                    currentChannel = 1;
+                }
+            }
+            if (direction == "left") {
+                currentChannel = currentChannel - 1;
+                if (currentChannel < 1) {
+                    currentChannel = maxChannel;
+                }
+            }
+            displayedChannel.innerHTML = currentChannel;
+            setChannelName(currentChannel);
+        }
+
+        function getCurrentChannel() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    displayedChannel.innerHTML = xhr.responseText;
+                    setChannelName(parseInt(xhr.responseText));
+                }
+            }
+            xhr.open('GET', "/get_channel", true);
+            xhr.send(null);
+        }
+
+        function setChannelName(channel) {
+            if (channel in channelNames) {
+                displayedChannelName.innerHTML = channelNames[channel];
+            } else {
+                displayedChannelName.innerHTML = "N/A";
+            }
+        }
+
+        function getMaxChannelFromMapping() {
+            var max = 1;
+            for (key in channelNames) {
+                if (parseInt(key) > max) {
+                    max = parseInt(key);
+                }
+            }
+            return max;
+        }
+    </script>
+</body>
+
+</html>
